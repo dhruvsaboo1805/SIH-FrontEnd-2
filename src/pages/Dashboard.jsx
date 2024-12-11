@@ -1,3 +1,4 @@
+// Dashboard.jsx
 import AdminSidebar from "../components/AdminSidebar";
 import Bar from "../components/Bar";
 import { useEffect, useState } from "react";
@@ -19,11 +20,32 @@ const Dashboard = () => {
   const [newCity, setNewCity] = useState("bhopal");
   const [lastCity, setLastCity] = useState("bhopal");
 
+  // Function to calculate AQI (basic logic: sum or weighted average)
+  const calculateAqi = (pollutants) => {
+    if (!pollutants || Object.keys(pollutants).length === 0) return 0;
+
+    // Example: Weighted average calculation (adjust weights per pollutant if needed)
+    const weights = {
+      PM10: 0.5,
+      PM25: 0.3,
+      NO2: 0.1,
+      SO2: 0.05,
+      CO: 0.05,
+    };
+
+    const totalAqi = Object.entries(pollutants).reduce((acc, [key, value]) => {
+      const weight = weights[key.toUpperCase()] || 0; // Use weight if defined, else 0
+      return acc + value * weight;
+    }, 0);
+
+    return Math.round(totalAqi); // Return rounded AQI value
+  };
+
   // Function to fetch AQI data
   const fetchAqiData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`https://sih.anujg.me/fetch/${newCity}`);
+      const response = await axios.get(`https://sih.anujg.me/fetch/${city}`);
       const data = response.data.data.cities[0];
 
       if (data && data.airComponents) {
@@ -35,6 +57,11 @@ const Dashboard = () => {
         }, {});
 
         setPollutants(formattedPollutants);
+
+        // Calculate and set AQI value
+        const aqiValue = calculateAqi(formattedPollutants);
+        setCityAqi(aqiValue);
+
         setLastCity(newCity);
         toast.success("City data fetched successfully!");
       } else {
@@ -48,90 +75,29 @@ const Dashboard = () => {
     }
   };
 
-  // Function to calculate AQI from pollutant data
-  const calculateAQI = (pollutantConcentration, breakpoints) => {
-    const { C_low, C_high, I_low, I_high } = breakpoints;
-    return (
-      ((I_high - I_low) / (C_high - C_low)) *
-        (pollutantConcentration - C_low) +
-      I_low
-    );
-  };
-
-  const getAQIBreakpoints = (pollutant, concentration) => {
-    const breakpoints = {
-      pm25: [
-        { C_low: 0, C_high: 12, I_low: 0, I_high: 50 },
-        { C_low: 12.1, C_high: 35.4, I_low: 51, I_high: 100 },
-        { C_low: 35.5, C_high: 55.4, I_low: 101, I_high: 150 },
-      ],
-      pm10: [
-        { C_low: 0, C_high: 54, I_low: 0, I_high: 50 },
-        { C_low: 55, C_high: 154, I_low: 51, I_high: 100 },
-        { C_low: 155, C_high: 254, I_low: 101, I_high: 150 },
-      ],
-      // Add more pollutant ranges as needed...
-    };
-
-    const bp = breakpoints[pollutant]?.find(
-      (range) =>
-        concentration >= range.C_low && concentration <= range.C_high
-    );
-    return bp;
-  };
-
-  const calculateOverallAQI = (pollutants) => {
-    let highestAQI = 0;
-
-    Object.keys(pollutants).forEach((pollutant) => {
-      const concentration = pollutants[pollutant];
-      const breakpoints = getAQIBreakpoints(pollutant, concentration);
-
-      if (breakpoints) {
-        const aqi = calculateAQI(concentration, breakpoints);
-        if (aqi > highestAQI) {
-          highestAQI = aqi;
-        }
-      }
-    });
-
-    return highestAQI;
-  };
-
   // Fetch AQI data on city change
   useEffect(() => {
     fetchAqiData();
   }, [newCity]);
 
-  // Calculate AQI whenever pollutant data updates
-  useEffect(() => {
-    if (pollutants) {
-      setLoading(true);
-      const overallAQI = calculateOverallAQI(pollutants);
-      setCityAqi(overallAQI);
-      setLoading(false);
-    }
-  }, [pollutants]);
-
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="dashboard">
-        <Bar city={newCity} setCity={setNewCity} fetchAqiData={fetchAqiData} />
+        <Bar city={city} setCity={setCity} fetchAqiData={fetchAqiData} />
         {loading ? (
           <Loader />
         ) : (
           <div className="aqi-content">
-            <section className="widget-container">
-              <WidgetItem
-                data={Object.values(pollutants)}
-                heading={`${city}`}
-                aqi={cityAqi ? cityAqi.toFixed(2) : "N/A"}
-              />
+            {/* First row: Map + Circular Progress Bar */}
+            <section className="map-and-widget">
+              <WidgetItem city={city} aqi={cityAqi ? cityAqi.toFixed(2) : "0"} />
             </section>
-            <section className="map-container">
-              <div className="data">
-                {Object.entries(pollutants).map(([key, value]) => (
+
+            {/* Second row: AQI Bars + Bar Chart */}
+            <section className="aqi-bars-and-chart">
+              <div className="aqi-bars">
+                {Object.entries(pollutants).map(([key, value], index) => (
                   <AqiLevel
                     key={key}
                     value={value}
@@ -141,24 +107,14 @@ const Dashboard = () => {
                   />
                 ))}
               </div>
-              <PieChart
-                data={Object.values(pollutants)}
-                labels={Object.keys(pollutants)}
-                backgroundColor={[
-                  "#21ed15",
-                  "#f2f11f",
-                  "#fe714d",
-                  "#FFC0CB",
-                  "#de4df3",
-                  "#da0e26",
-                ]}
-              />
-              <LineChart
-                data={Object.values(pollutants)}
-                labels={Object.keys(pollutants)}
-                legend
-                backgroundColor={"#f8000087"}
-              />
+              <div className="bar-chart-container">
+                <LineChart
+                  data={Object.values(pollutants)}
+                  labels={Object.keys(pollutants)}
+                  legend
+                  backgroundColor={"#f8000087"}
+                />
+              </div>
             </section>
           </div>
         )}
@@ -172,15 +128,14 @@ const AqiLevel = ({ value, unit, parameter, color }) => (
     <ProgressBar
       bgColor={color}
       completed={value}
-      className="wrapper"
       maxCompleted={100}
       customLabel=" "
     />
-    <h3>
-      {value} {unit}
-    </h3>
-    <p>{parameter}</p>
+    <p>
+      {parameter}: {value} {unit}
+    </p>
   </div>
 );
 
 export default Dashboard;
+

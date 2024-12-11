@@ -22,7 +22,7 @@ const getHealthImpact = (aqiLevel) => {
     }
 };
 
-const WidgetItem = ({ heading, aqi }) => {
+const WidgetItem = ({ city, aqi , heading }) => {
     let pathColor = "";
     let aqiLevel = "";
 
@@ -57,12 +57,12 @@ const WidgetItem = ({ heading, aqi }) => {
         <div className="widget-container">
             {/* Left section: Map */}
             <div className="map-container">
-                <Map />
+                <Map city = {city}/>
             </div>
 
             {/* Right section: AQI widget */}
             <div className="widget-info">
-                <h4>{heading}</h4>
+                <h4>{city}</h4>
 
                 <CircularProgressbar
                     value={aqi}
@@ -72,8 +72,10 @@ const WidgetItem = ({ heading, aqi }) => {
                         pathColor: pathColor,
                         textColor: pathColor,
                         trailColor: "#e6e6e6",
+                        strokeWidth: 10,  // Reduced thickness of the circle
                     })}
                 />
+
 
                 <div
                     className="aqi-level"

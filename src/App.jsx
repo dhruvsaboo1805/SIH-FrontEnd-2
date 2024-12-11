@@ -12,6 +12,7 @@ const Blog = lazy(() => import("./pages/Blog"));
 const Health = lazy(() => import("./pages/Health"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Forecast = lazy(() => import("./pages/Forecast"));
+const Health_recommendation = lazy(() => import("./pages/Health_recommendation"));
 
 const App = () => {
 
@@ -33,6 +34,7 @@ const App = () => {
 					<Route path="/health" element={<Health />} />
 					<Route path="/contact" element={<Contact />} />
 					<Route path="/forecast" element={<Forecast />} />
+					<Route path="/health_recommendation" element={<Health_recommendation />} />
 					<Route path="*" element={<h2>Page Not Found</h2>} />
 				</Routes>
 				<ToastContainer 

@@ -1,28 +1,39 @@
-/* Custom Styles for WidgetItem component */
+Custom Styles for WidgetItem component
 
 .widget-container {
     display: flex;
     flex-direction: row;
-    height: 600px;  /* Set a fixed height for the whole widget */
+    /* height: px;  Set a fixed height for the whole widget */
     width: 100%;
   }
   
   .map-container {
-    flex: 2;  /* Map takes 2/3 of the width */
     width: 600px;
-    height: 100px;
+    height: -50px;
     margin: 0 auto;
     border-radius: 10px 0 0 10px;
     height: 100%;  /* Ensures the height is the same as the container */
   }
+
+  .data{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-left: 30px;
+    margin-top: -140px;
+    margin-right: 40px;
+    gap: 40px;
+  }
   
   .widget-info {
-    flex: 1;  /* AQI widget takes 1/3 of the width */
+    width: auto;
     padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%; 
+    height: 65%; 
     border-radius: 0 10px 10px 0;
     background-color: #fff;
   }
@@ -47,4 +58,3 @@
   .widget-info span {
     font-weight: 600;
   }
-  

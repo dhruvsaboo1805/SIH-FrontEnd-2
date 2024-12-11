@@ -77,6 +77,7 @@ const DivOne = () => (
 			<Li url="/blogs" text="Blogs" Icon={LiaBlogSolid} location={location} />
 			<Li url="/health" text="AQI & Health" Icon={MdHealthAndSafety} location={location} />
 			<Li url="/contact" text="Contact" Icon={MdContactMail} location={location} />
+			<Li url="/health_recommendation" text="Health Recomendation" Icon={MdHealthAndSafety} location={location} />
 		</ul>
 	</div>
 );

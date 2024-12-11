@@ -35,7 +35,7 @@ const Map = ({ city }) => {
             setMarkerPosition({ lat, lng: lon });
             setMapKey((prevKey) => prevKey + 1); // Force re-render
           } else {
-            alert("City not found.");
+            
           }
         } catch (error) {
           console.error("Error fetching city data:", error);
@@ -58,7 +58,7 @@ const Map = ({ city }) => {
         key={mapKey} // Set the key to force re-render of the map
         center={[center.lat, center.lng]}
         zoom={13}
-        style={{ width: "100%", height: "500px", border: "1px solid #ccc" }}
+        style={{ width: "100%", height: "360px", border: "1px solid #ccc" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
