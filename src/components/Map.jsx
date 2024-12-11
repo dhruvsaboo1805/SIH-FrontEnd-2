@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-const API_KEY = "5796abbde9106b7da4febfae8c44c232";
+
+const API_KEY = "5796abbde9106b7da4febfae8c44c232"; // Replace with your actual API key
 
 // Function to get color based on AQI value
 const getAqiColor = (aqi) => {
@@ -14,12 +14,43 @@ const getAqiColor = (aqi) => {
   return "maroon"; // For hazardous
 };
 
-const Map = ({ city }) => {
+const calculateAqi = (pollutants) => {
+  if (!pollutants || Object.keys(pollutants).length === 0) return 0;
+  // console.log("Pollutants:", pollutants);
+
+  // Example: Weighted average calculation (adjust weights per pollutant if needed)
+  const weights = {
+    PM10: 0.5,
+    PM25: 0.3,
+    NO2: 0.1,
+    SO2: 0.05,
+    CO: 0.05,
+  };
+
+    const airComponents = pollutants.airComponents;
+
+    const formattedPollutants = airComponents.reduce((acc, component) => {
+      acc[component.senDevId] = component.sensorData || 0;
+      return acc;
+    }, {});
+
+
+  const totalAqi = Object.entries(formattedPollutants).reduce((acc, [key, value]) => {
+    const weight = weights[key.toUpperCase()] || 0; // Use weight if defined, else 0
+    return acc + value * weight;
+  }, 0);
+
+  // console.log("Total AQI:", totalAqi, typeof totalAqi);
+  return Math.round(totalAqi); // Return rounded AQI value
+};
+
+const Map = ({ city , stations}) => {
   const [center, setCenter] = useState({ lat: 28.6139, lng: 77.209 }); // Default center: Delhi
   const [markerPosition, setMarkerPosition] = useState({ lat: 28.6139, lng: 77.209 });
   const [mapKey, setMapKey] = useState(0); // Key to force re-render of the map
   const [aqiData, setAqiData] = useState([]); // State to store AQI data from API
 
+  // Fetch city coordinates from OpenWeatherMap API
   useEffect(() => {
     if (city) {
       const fetchCityCoordinates = async () => {
@@ -35,10 +66,10 @@ const Map = ({ city }) => {
             setMarkerPosition({ lat, lng: lon });
             setMapKey((prevKey) => prevKey + 1); // Force re-render
           } else {
-            
+            console.error("City not found.");
           }
         } catch (error) {
-          console.error("Error fetching city data:", error);
+          console.error("Error fetching city coordinates:", error);
           alert("Failed to fetch city coordinates. Please try again.");
         }
       };
@@ -47,10 +78,28 @@ const Map = ({ city }) => {
     }
   }, [city]);
 
-  // Fetch AQI data when component mounts or updates
+  // Fetch AQI data from an AQI API (example URL, you need to replace it with your actual AQI source)
   useEffect(() => {
-    // Simulate AQI data fetch as before
-  }, []);
+    const fetchAqi = async () => {
+      try {
+        if(stations){
+        const aqiInfo = stations.map((station) => {
+          const { lat, lon, ...pollutants } = station;
+          return {
+            lat,
+            lon,
+            aqi: calculateAqi(pollutants),
+          };
+        });
+        setAqiData(aqiInfo); // Store AQI data to state
+      }
+      } catch (error) {
+        console.error("Error fetching AQI data:", error);
+      }
+    };
+
+    fetchAqi();
+  }, [city]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -73,7 +122,7 @@ const Map = ({ city }) => {
             <Circle
               key={index}
               center={[lat, lon]}
-              radius={500}
+              radius={500} // Adjust radius as needed
               fillColor={color}
               color={color}
               fillOpacity={0.6}

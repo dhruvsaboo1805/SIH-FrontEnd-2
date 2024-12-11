@@ -22,7 +22,7 @@ const getHealthImpact = (aqiLevel) => {
     }
 };
 
-const WidgetItem = ({ city, aqi , heading }) => {
+const WidgetItem = ({ city, aqi , stations }) => {
     let pathColor = "";
     let aqiLevel = "";
 
@@ -57,7 +57,7 @@ const WidgetItem = ({ city, aqi , heading }) => {
         <div className="widget-container">
             {/* Left section: Map */}
             <div className="map-container">
-                <Map city = {city}/>
+                <Map city = {city} stations={stations}/>
             </div>
 
             {/* Right section: AQI widget */}
