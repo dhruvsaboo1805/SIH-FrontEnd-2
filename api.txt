@@ -1,0 +1,109 @@
+import React, { useState } from "react";
+import Navbar from "./components/navbar";
+import Map from "./components/map";
+import GaugeChart from "./components/GaugeChart";
+import "./App.css";
+
+const App = () => {
+  const [city, setCity] = useState(""); // State to hold the city name
+  const [selectedCity, setSelectedCity] = useState(""); // State for city passed to Map
+  const [sensorData, setSensorData] = useState([]); // State to hold all sensor data
+  const [aqiValue, setAqiValue] = useState(null); // State for calculated AQI
+
+  const handleCityChange = (e) => {
+    setCity(e.target.value);
+  };
+
+  const handleCitySubmit = async () => {
+    setSelectedCity(city); // Pass city to the Map component
+
+    try {
+      const response = await fetch(`https://sih.anujg.me/fetch/${city}`);
+      const apiResponse = await response.json();
+
+      if (apiResponse?.data?.cities?.[0]?.airComponents) {
+        const components = apiResponse.data.cities[0].airComponents;
+        setSensorData(components);
+
+        // Example AQI calculation (customize as needed)
+        const pm25Data = components.find((comp) => comp.senDevId === "pm25")?.sensorData || 0;
+        const pm10Data = components.find((comp) => comp.senDevId === "pm10")?.sensorData || 0;
+        const no2Data = components.find((comp) => comp.senDevId === "no2")?.sensorData || 0;
+
+        const calculatedAQI = calculateAQI(pm25Data, pm10Data, no2Data); // Replace with AQI formula
+        setAqiValue(calculatedAQI);
+      } else {
+        console.error("Invalid response format:", apiResponse);
+        setSensorData([]);
+        setAqiValue(null); // Reset on error
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setSensorData([]);
+      setAqiValue(null); // Reset on error
+    }
+  };
+
+  const calculateAQI = (pm25, pm10, no2) => {
+    // AQI calculation logic (simplified example)
+    return Math.max(pm25, pm10, no2); // Replace with the actual AQI formula based on sensor values
+  };
+
+  return (
+    <div>
+      <Navbar />
+      <div style={{ padding: "16px", textAlign: "center" }}>
+        <input
+          type="text"
+          value={city}
+          onChange={handleCityChange}
+          placeholder="Enter a city name..."
+          style={{
+            width: "300px",
+            padding: "10px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            marginRight: "10px",
+          }}
+        />
+        <button
+          onClick={handleCitySubmit}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Submit
+        </button>
+      </div>
+      <Map city={selectedCity} /> {/* Pass the city as a prop */}
+      <div className="graphs">
+        {aqiValue !== null ? (
+          <GaugeChart value={aqiValue} />
+        ) : (
+          <p style={{ textAlign: "center" }}>No AQI data available.</p>
+        )}
+      </div>
+      <div style={{ padding: "16px" }}>
+        <h3>Sensor Data:</h3>
+        {sensorData.length > 0 ? (
+          <ul>
+            {sensorData.map((sensor, index) => (
+              <li key={index}>
+                <strong>{sensor.sensorName}:</strong> {sensor.sensorData} {sensor.sensorUnit}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No sensor data available.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default App;
