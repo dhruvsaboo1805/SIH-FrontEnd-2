@@ -18,9 +18,9 @@ const aqiData = [
 
 // Dummy Employee Data
 const employees = [
-  { id: 1, name: "Amaan Hussain" },
-  { id: 2, name: "Dhruv Saboo" },
-  { id: 3, name: "Anuj Gupta" },
+  { id: 1, name: "Amaan Hussain Jila Adhyaksh ji of Village 1" },
+  { id: 2, name: "Dhruv Saboo Sachiv ji of Village 2" },
+  { id: 3, name: "Anuj Gupta Pradhan ji of Village 3" },
 ];
 
 const AQI_spike = () => {
