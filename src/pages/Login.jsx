@@ -41,6 +41,8 @@ const Login = () => {
                 handleSuccess(message);
                 localStorage.setItem('token', jwtToken);
                 localStorage.setItem('loggedInUser', name);
+                sessionStorage.setItem('token', jwtToken);
+                sessionStorage.setItem('user', name);
 
                 // Redirect to the home page after successful login
                 navigate('/dashboard');

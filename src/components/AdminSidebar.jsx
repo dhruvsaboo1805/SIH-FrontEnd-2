@@ -71,7 +71,9 @@ const AdminSidebar = () => {
 
 const handleLogout = () => {
 	// Redirect to the root path
-	window.location.href = '/';
+  sessionStorage.clear();
+  localStorage.clear();
+	window.location.href = '/dashboard';
   };
 
 const DivOne = () => (
@@ -109,33 +111,64 @@ const DivOne = () => (
         Icon={MdHealthAndSafety}
         location={location}
       />
-      <Li
-        url="/city_data_comparision"
-        text="City Data Comparision"
-        Icon={MdHealthAndSafety}
+	  <Li
+        url="/aqi_spike"
+        text="AQI Spike"
+        Icon={LiaBlogSolid}
         location={location}
       />
-      <Li
-        url="/download"
-        text="download"
-        Icon={MdHealthAndSafety}
+	  <Li
+        url="/daily_trends"
+        text="Daily Trends"
+        Icon={LiaBlogSolid}
         location={location}
       />
-    </ul>
-    <button
-      className="button"
-      style={{
-        backgroundColor: "red",
-        color: "white",
-        padding: "10px 20px",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-      }}
-      onClick={handleLogout}
-    >
-      Logout
-    </button>
+        {sessionStorage.getItem("user") != null ? (
+          <>
+            <Li
+              url="/city_data_comparision"
+              text="City Data Comparision"
+              Icon={MdHealthAndSafety}
+              location={location}
+            />
+            <Li
+              url="/download"
+              text="Download"
+              Icon={MdHealthAndSafety}
+              location={location}
+            />
+            <button
+              className="button"
+              style={{
+                backgroundColor: "red",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </>
+        ) : 
+        <button
+              className="button"
+              style={{
+                backgroundColor: "red",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={() => window.location.href = '/login'}
+            >
+              Login
+            </button>}
+      </ul>
+    
   </div>
 );
 const Li = ({ url, text, Icon }) => (

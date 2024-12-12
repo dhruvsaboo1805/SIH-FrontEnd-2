@@ -102,7 +102,7 @@ const Dashboard = () => {
       fetchAqiData();
     }
   }, [debouncedCity]);
-  console.log(Object.keys(pollutants));
+  // console.log(Object.keys(pollutants));
   return (
     <div className="admin-container">
       <AdminSidebar />

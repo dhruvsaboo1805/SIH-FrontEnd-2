@@ -4,7 +4,7 @@ import AdminSidebar from '../components/AdminSidebar';
 const api = "https://sih.anujg.me/csv/hw/";
 
 const DownloadData = () => {
-  const [selectedDeviceId, setSelectedDeviceId] = useState(''); // Selected device ID state
+  const [selectedDeviceId, setSelectedDeviceId] = useState('');
 
   const handleDownload = () => {
     if (!selectedDeviceId) {
@@ -12,26 +12,52 @@ const DownloadData = () => {
       return;
     }
 
-    const downloadUrl = `${api}${selectedDeviceId}`; // Build dynamic download URL
-    window.location.href = downloadUrl; // Initiate download
+    const downloadUrl = `${api}${selectedDeviceId}`;
+    window.location.href = downloadUrl;
   };
 
   return (
-    <div className="admin-container">
+    <div
+      className="admin-container"
+    >
       <AdminSidebar />
-      <div className="download-data-container">
-        <h2 style={{ marginBottom: '20px', marginLeft: 'calc(50% - 75px)' }}>
+      <div
+        className="download-data-container"
+        style={{
+          textAlign: 'center',
+          padding: '20px',
+          border: '1px solid #ccc',
+          borderRadius: '10px',
+          // backgroundColor: '#fff', // White background for form
+          // boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow
+        }}
+      >
+        <h2 style={{ marginBottom: '20px' }}>
           Download Hardware Sensor AQI Data
         </h2>
-        <div className="download-options" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <label htmlFor="deviceId" style={{ marginRight: '10px' }}>
+        <div
+          className="download-options"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <label htmlFor="deviceId" style={{ marginBottom: '10px' }}>
             Select Device ID:
           </label>
           <select
             id="deviceId"
             name="deviceId"
             className="device-id-select"
-            style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '5px' }}
+            style={{
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              marginBottom: '20px',
+              width: '200px',
+              textAlign: 'center',
+            }}
             value={selectedDeviceId}
             onChange={(e) => setSelectedDeviceId(e.target.value)}
           >
@@ -43,18 +69,17 @@ const DownloadData = () => {
             <option value="TTI-05">TTI-05</option>
             <option value="TTI-06">TTI-06</option>
             <option value="TTI-07">TTI-07</option>
-            {/* Add more options for TTI-08 and TTI-09 if needed */}
           </select>
           <button
             className="download-btn"
             style={{
-              marginLeft: '10px',
               padding: '10px 20px',
               backgroundColor: '#4CAF50',
               color: 'white',
               border: 'none',
               borderRadius: '5px',
               cursor: 'pointer',
+              fontSize: '16px',
             }}
             onClick={handleDownload}
           >

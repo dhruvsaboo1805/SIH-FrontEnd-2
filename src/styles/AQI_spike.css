@@ -1,0 +1,80 @@
+.app-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .aqi-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .aqi-table th, .aqi-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .high-aqi {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .low-aqi {
+    color: green;
+  }
+  
+  .action-button {
+    padding: 5px 10px;
+    color: white;
+    background-color: blue;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .employee-list {
+    margin: 20px 0;
+  }
+  
+  .employee-item {
+    margin: 10px 0;
+  }
+  
+  .assign-button, .cancel-button {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .assign-button {
+    background-color: green;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .cancel-button {
+    background-color: red;
+    color: white;
+  }
+  

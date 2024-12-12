@@ -49,7 +49,6 @@ const Map = ({ city , stations}) => {
   const [markerPosition, setMarkerPosition] = useState({ lat: 28.6139, lng: 77.209 });
   const [mapKey, setMapKey] = useState(0); // Key to force re-render of the map
   const [aqiData, setAqiData] = useState([]); // State to store AQI data from API
-
   // Fetch city coordinates from OpenWeatherMap API
   useEffect(() => {
     if (city) {
@@ -99,7 +98,7 @@ const Map = ({ city , stations}) => {
     };
 
     fetchAqi();
-  }, [city]);
+  }, [city, stations]);
 
   return (
     <div style={{ position: "relative" }}>
